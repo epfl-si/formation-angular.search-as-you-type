@@ -31,4 +31,6 @@ describe('SearchAsYouTypeComponent', () => {
     input.triggerEventHandler('keyup', {});
     expect(component.search).toHaveBeenCalledWith('toto');
   });
+
+  it('shows results');
 });
