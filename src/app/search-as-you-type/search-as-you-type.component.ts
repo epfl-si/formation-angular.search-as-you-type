@@ -12,4 +12,7 @@ export class SearchAsYouTypeComponent implements OnInit {
   ngOnInit() {
   }
 
+  search(value: string) {
+      console.log(value);
+  }
 }
