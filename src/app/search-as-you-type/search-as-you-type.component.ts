@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Subscription, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
+import { tap, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-search-as-you-type',
@@ -8,17 +9,15 @@ import { Subscription, Subject } from 'rxjs';
 })
 export class SearchAsYouTypeComponent implements OnInit {
   private searchString = new Subject<string>();
+  searchStringDebounced = this.searchString.pipe(
+    debounceTime(400),
+    distinctUntilChanged(),
+    tap(console.log)
+  );
 
   constructor() { }
 
-  private subscribed : Subscription;
-
   ngOnInit() {
-    this.subscribed = this.searchString.subscribe(console.log);
-  }
-
-  ngOnDestroy() {
-    this.subscribed.unsubscribe();
   }
 
   search(value: string) {
