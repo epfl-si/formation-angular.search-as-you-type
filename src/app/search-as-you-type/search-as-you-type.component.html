@@ -1,1 +1,2 @@
 <input type="text" #searchterm (keyup)="search(searchterm.value)">
+<p>Current search term:</p><pre>{{searchStringDebounced | async }}</pre>
