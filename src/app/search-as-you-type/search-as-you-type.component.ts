@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Subject } from 'rxjs';
-import { tap, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { tap, map, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { HttpClient, HttpParams } from "@angular/common/http";
 
 @Component({
   selector: 'app-search-as-you-type',
@@ -8,6 +9,8 @@ import { tap, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operato
   styleUrls: ['./search-as-you-type.component.css']
 })
 export class SearchAsYouTypeComponent implements OnInit {
+  constructor(private http : HttpClient) { }
+
   private searchString = new Subject<string>();
   searchStringDebounced = this.searchString.pipe(
     debounceTime(400),
@@ -16,10 +19,8 @@ export class SearchAsYouTypeComponent implements OnInit {
   );
 
   searchResults = this.searchStringDebounced.pipe(
-      switchMap(searchEPFL)
+      switchMap((q) => searchEPFL(this.http, q))
   );
-
-  constructor() { }
 
   ngOnInit() {
   }
@@ -29,17 +30,16 @@ export class SearchAsYouTypeComponent implements OnInit {
   }
 }
 
-// Copy-pasted from https://stackblitz.com/edit/epfl-angular-exercice4-jquery?file=index.js
-function searchEPFL(q) /* returns Promise<Object[]> */ {
-  const url = "https://search-api.epfl.ch/api/ldap?q=" + q +
-     "&showall=0" +
-     "&hl=fr" +
-     "&pagesize=all" +
-     "&siteSearch=formation+Angular+IDEV";
-  return fetch(url, {
-      "credentials": "omit",
-      "mode": "cors"
-      }).then(function(r) {
-        return r.json();
-      });
+function searchEPFL(http : HttpClient, q : string) : Observable<any[]> {
+  const url = "https://search-api.epfl.ch/api/ldap";
+  const params = new HttpParams()
+    .set('q', q)
+    .set('showall', '0')
+    .set('hl', 'fr')
+    .set('pagesize', 'all')
+    .set('siteSearch', 'formation Angular IDEV');
+  return http.get<any[]>(url, {
+    responseType:"json",
+    withCredentials: false,
+    params});
 };
