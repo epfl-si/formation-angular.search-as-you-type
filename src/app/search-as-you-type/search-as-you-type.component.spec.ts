@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { SearchAsYouTypeComponent } from './search-as-you-type.component';
 
@@ -9,6 +10,7 @@ describe('SearchAsYouTypeComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [ HttpClientTestingModule ],
       declarations: [ SearchAsYouTypeComponent ]
     })
     .compileComponents();
